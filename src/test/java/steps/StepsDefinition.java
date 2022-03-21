@@ -4,16 +4,21 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.junit.Assert;
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.WebDriver;
 import pages.*;
 import utils.WebDriverFactory;
 import utils.driverType;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import static org.junit.Assert.assertTrue;
 
 public class StepsDefinition {
     WebDriver driver;
+    private Logger logger = LogManager.getLogger(StepsDefinition.class);
     String url;
 
     @Given("Open start page {string}")
@@ -48,7 +53,7 @@ public class StepsDefinition {
                 adListPage.pushTableView();
                 break;
             default:
-                System.out.println("choose type view");
+                logger.error("choose type view");
                 break;
         }
     }
@@ -101,7 +106,7 @@ public class StepsDefinition {
             favoritesPage.returnBack();
         }
         catch (ElementNotInteractableException e){
-            System.out.println("Favourite list is clear");
+            logger.info("Favourite list is clear");
         }
 
     }
@@ -110,6 +115,23 @@ public class StepsDefinition {
     public void checkAdHasAdded() {
         FavoritesPage favoritesPage = new FavoritesPage(driver);
         assertTrue("Ad was not add to favourite list", url.contains(favoritesPage.returnUrlAd()));
+    }
+
+    @And ("click remove from favourite in view {string}")
+    public void removeFromAd(String viewType){
+        AdListPage adListPage = new AdListPage(driver);
+        adListPage.removeFromFavourite(viewType);
+    }
+
+    @Then ("check that ad was not added")
+    public void checkAdWasNotAdded(){
+        try{
+            openFavoritesPage();
+            Assert.fail("Favourite list is not clear");
+        }
+        catch (ElementNotInteractableException e){
+            logger.info("Favourite list is clear");
+        }
     }
 
 

@@ -1,7 +1,7 @@
 # language: en
 @all
 Feature: favourites
-  Scenario: Add an ad to favorites from ad page
+  Scenario: Add an ad to favorites from ad's page
     Given Open start page "https://www.reklama.lv/ru/"
     And choose a "Хозработы" category
     And checkFavoritesListIsClear
@@ -43,6 +43,12 @@ Feature: favourites
     And Check that the ad has been added
     Then clear the favourite list
 
-#TO DO
-# Scenario: Add and remove ad
-# Scenario: check that ad was saved after close tab
+  Scenario: Add and remove ad from cardView
+    Given Open start page "https://www.reklama.lv/ru/"
+    And choose a "Хозработы" category
+    And checkFavoritesListIsClear
+    And choose view type "cardView"
+    Then choose first ad in view "cardView" and click to favourite button
+    And click remove from favourite in view "cardView"
+    Then check that ad was not added
+

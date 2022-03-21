@@ -1,14 +1,18 @@
 package pages;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import steps.StepsDefinition;
 
 import java.util.List;
 
 public class AdListPage extends BasicPage {
+    private Logger logger = LogManager.getLogger(StepsDefinition.class);
     public AdListPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
         this.driver = driver;
@@ -56,7 +60,7 @@ public class AdListPage extends BasicPage {
                 tableAdList.get(0).click();
                 break;
             default:
-                System.out.println("choose type view");
+                logger.error("choose type view");
                 break;
         }
     }
@@ -77,10 +81,10 @@ public class AdListPage extends BasicPage {
                 break;
             case "tableView":
                 moveToElement(tableAdList.get(0));
-                moveAndClickToElement(tableAdList.get(0).findElement(By.xpath("//div[@class=\"info\"]")));
+                clickOnInvisibleElement(tableAdList.get(0).findElement(By.xpath("//div[@class=\"info\"]/a[@class=\"fav-add\"]")));
                 break;
             default:
-                System.out.println("choose type view");
+                logger.error("choose type view");
                 break;
         }
     }
@@ -98,9 +102,29 @@ public class AdListPage extends BasicPage {
                 url = tableAdList.get(0).findElement(By.xpath("//a[@target=\"_blank\"]")).getAttribute("href");
                 break;
             default:
-                System.out.println("choose type view");
+                logger.error("choose type view");
                 break;
         }
         return url;
+    }
+
+    public void removeFromFavourite(String viewType){
+        switch (viewType) {
+            case "cardView":
+                moveToElement(cardAdList.get(0));
+                cardAdList.get(0).findElement(By.cssSelector("div.info a.fav-remove")).click();
+                break;
+            case "textView":
+                moveToElement(textAdList.get(0));
+                textAdList.get(0).findElement(By.xpath("//div[@class=\"info\"]/a[@class=\"fav-remove\"]")).click();
+                break;
+            case "tableView":
+                moveToElement(tableAdList.get(0));
+                clickOnInvisibleElement(tableAdList.get(0).findElement(By.xpath("//div[@class=\"info\"]/a[@class=\"fav-remove\"]")));
+                break;
+            default:
+                logger.error("choose type view");
+                break;
+        }
     }
 }
